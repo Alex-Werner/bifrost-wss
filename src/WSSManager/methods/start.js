@@ -29,7 +29,6 @@ async function start() {
                 self.onEvent('close', ws)
                 self.logger.info(`Client disconnected. Total: ${self.connectedClients}`);
             });
-            ws.send('Welcome new client!');
         });
         this.logger.info('WSService started on PORT 8090... ');
     }
