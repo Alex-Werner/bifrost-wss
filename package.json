@@ -1,0 +1,28 @@
+{
+  "name": "bifrost-wss",
+  "version": "1.0.0",
+  "description": "WSS Manager",
+  "main": "src/WSSManager/WSSManager.js",
+  "type": "module",
+  "scripts": {
+    "test": "vitest --dir .",
+    "test:dev": "vitest --dir . --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex-Werner/bifrost-wss.git"
+  },
+  "author": "Alex Werner <@obusco>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Alex-Werner/bifrost-wss/issues"
+  },
+  "homepage": "https://github.com/Alex-Werner/bifrost-wss#readme",
+  "dependencies": {
+    "hermodlog": "^1.0.0",
+    "ws": "^8.14.1"
+  },
+  "devDependencies": {
+    "vitest": "^0.34.4"
+  }
+}
