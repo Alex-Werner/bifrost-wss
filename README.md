@@ -1,0 +1,2 @@
+# bifrost-wss
+WSS Manager
