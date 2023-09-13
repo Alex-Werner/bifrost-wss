@@ -23,10 +23,10 @@ async function start() {
             self.logger.listener('onConnection').info(`New client ${peer.peerID} connected. Total: ${self.clients.all.size}`);
 
             ws.on('message', (message) => {
-                self.onEvent('message', peer, message)
+                self.considerEvent('message', peer, message)
             });
             ws.on('close', () => {
-                self.onEvent('close', ws)
+                self.considerEvent('close', peer, ws)
                 self.logger.info(`Client disconnected. Total: ${self.connectedClients}`);
             });
         });

@@ -76,11 +76,17 @@ Start the websocket server.
 
 Stop the websocket server.
 
-##### `setOnEventListener(event, callback)`
+##### `onEvent(event, callback)`
 
 Set a listener for the given event.
 
 Some events: `connection`, `message`, `close`, `error`.
+
+--- 
+name | description
+----
+connection | When a new client connects, args returned (peer, message)
+message | When a new message is received, args returned (peer: has the request, socket and id)
 
 ##### `logger`
 

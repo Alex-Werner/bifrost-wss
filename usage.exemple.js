@@ -8,11 +8,12 @@ import ws from "ws";
     wssManager.start()
 
     // We set a listener that will allow to setup how we want to act on "message"
-    wssManager.setOnEventListener('message', (peer, message) => {
+    wssManager.onEvent('message', (peer, message) => {
+        console.log('This execute on message', message);
         wssManager.logger.listener('onMessage').info(`Received message from ${peer.id} => ${message}`);
         try {
             const parsed = JSON.parse(message.toString())
-            console.log('This execute on message', parsed.type, parsed.payload);
+            console.log('This execute on message:', parsed.type, parsed.payload);
         } catch (err) {
             console.log(message.toString());
             console.error(err);
@@ -20,7 +21,7 @@ import ws from "ws";
     })
 
     // We set a listener that will allow to setup how we want to act on new connection
-    wssManager.setOnEventListener('connection', (peer) => {
+    wssManager.onEvent('connection', (peer) => {
         wssManager.logger.listener('onConnection').info(`New client ${peer.id} connected. Total: ${wssManager.clients.all.size}`);
 
         // Peer has request, socket and id
@@ -40,7 +41,7 @@ import ws from "ws";
     client.on('open', function open() {
         console.log('connected')
         client.send('{"type": "hello", "payload": "world"}');
-        client.close()
+        // client.close()
     });
 
 })()

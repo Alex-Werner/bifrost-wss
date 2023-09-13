@@ -1,6 +1,6 @@
 import Logger from 'hermodlog';
 import onEvent from './methods/onEvent.js';
-import setOnEventListener from './methods/setOnEventListener.js';
+import considerEvent from './methods/considerEvent.js';
 import start from './methods/start.js';
 class WSSManager{
     constructor(props = {}) {
@@ -18,6 +18,6 @@ class WSSManager{
     }
 }
 WSSManager.prototype.onEvent = onEvent;
-WSSManager.prototype.setOnEventListener = setOnEventListener;
+WSSManager.prototype.considerEvent = considerEvent;
 WSSManager.prototype.start = start;
 export default WSSManager;
