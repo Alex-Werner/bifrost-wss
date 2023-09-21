@@ -1,6 +1,6 @@
 import {WebSocketServer} from 'ws';
 import WSPeer from "../../WSPeer/WSPeer.js";
-async function start() {
+async function start(props = {}) {
     const self = this;
 
     if (!this.server) {
@@ -11,6 +11,8 @@ async function start() {
         });
         this.server = server;
         this.connectedClients = 0;
+
+        this.deactivateDefaultConsider = props.deactivateDefaultConsider ?? false
 
         this.server.on('connection', (ws, request) => {
             const peer = new WSPeer({
@@ -30,7 +32,7 @@ async function start() {
                 self.logger.info(`Client disconnected. Total: ${self.connectedClients}`);
             });
         });
-        this.logger.info('WSService started on PORT 8090... ');
+        this.logger.info(`WSService started on PORT ${this.port}...`);
     }
     ;
 }

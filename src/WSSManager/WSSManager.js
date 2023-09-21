@@ -2,6 +2,7 @@ import Logger from 'hermodlog';
 import onEvent from './methods/onEvent.js';
 import considerEvent from './methods/considerEvent.js';
 import start from './methods/start.js';
+import broadcastAll from './methods/broadcastAll.js';
 class WSSManager{
     constructor(props = {}) {
         this.logger = props.logger ?? new Logger().context('WSSManager');
@@ -17,6 +18,7 @@ class WSSManager{
         this.isAuth = null;
     }
 }
+WSSManager.prototype.broadcastAll = broadcastAll;
 WSSManager.prototype.onEvent = onEvent;
 WSSManager.prototype.considerEvent = considerEvent;
 WSSManager.prototype.start = start;
