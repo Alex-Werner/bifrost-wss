@@ -16,13 +16,13 @@ async function start(props = {}) {
 
         this.server.on('connection', (ws, request) => {
             const peer = new WSPeer({
-                id: `P-${self.clients.all.size + 1}`,
+                id: `P-${self.peers.size + 1}`,
                 socket: ws,
                 request: request
             });
-            self.onEvent('connection',peer);
-            self.clients.all.set(peer.peerID, peer);
-            self.logger.listener('onConnection').info(`New client ${peer.peerID} connected. Total: ${self.clients.all.size}`);
+            // self.addHandler('connection',peer);
+            self.peers.set(peer.id, peer);
+            self.logger.listener('onConnection').info(`New client ${peer.id} connected. Total: ${self.peers.size}`);
 
             ws.on('message', (message) => {
                 self.considerEvent('message', peer, message)

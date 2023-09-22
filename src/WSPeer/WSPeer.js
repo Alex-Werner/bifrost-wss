@@ -13,5 +13,11 @@ class WSPeer {
 
         this.isAuth = null;
     }
+    send(message) {
+        if(typeof message === 'object') {
+            message = JSON.stringify(message);
+        }
+        this.socket.send(message);
+    }
 }
 export default WSPeer;

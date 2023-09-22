@@ -1,25 +1,29 @@
 import Logger from 'hermodlog';
-import onEvent from './methods/onEvent.js';
+
+import addHandler from './methods/addHandler.js';
+import addPeerToRoom from './methods/addPeerToRoom.js';
 import considerEvent from './methods/considerEvent.js';
 import start from './methods/start.js';
 import broadcastAll from './methods/broadcastAll.js';
+import broadcastRoom from "./methods/broadcastRoom.js";
+import createRoom from "./methods/createRoom.js";
+
 class WSSManager{
     constructor(props = {}) {
         this.logger = props.logger ?? new Logger().context('WSSManager');
         this.port = props.port ?? 8090;
 
-        this.listeners = {};
+        this.handlers = {};
 
-        this.clients = {
-            all: new Map(),
-            subscriptions: new Map(),
-        };
-
-        this.isAuth = null;
+        this.peers = new Map();
+        this.rooms = new Map();
     }
 }
+WSSManager.prototype.addHandler = addHandler;
+WSSManager.prototype.addPeerToRoom = addPeerToRoom;
 WSSManager.prototype.broadcastAll = broadcastAll;
-WSSManager.prototype.onEvent = onEvent;
+WSSManager.prototype.broadcastRoom = broadcastRoom;
 WSSManager.prototype.considerEvent = considerEvent;
+WSSManager.prototype.createRoom = createRoom;
 WSSManager.prototype.start = start;
 export default WSSManager;
