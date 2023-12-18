@@ -1,9 +1,10 @@
-import {WebSocketServer} from 'ws';
+import WebSocket from 'ws';
 import WSPeer from "../../WSPeer/WSPeer.js";
 async function start(props = {}) {
     const self = this;
 
     if (!this.server) {
+        const { WebSocketServer } = WebSocket;
         const server = new WebSocketServer({
             // noServer: true,
             port: this.port,
