@@ -8,6 +8,9 @@
     "test": "vitest --dir .",
     "test:dev": "vitest --dir . --watch"
   },
+  "browser": {
+    "ws": "./src/ws.shim.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Alex-Werner/bifrost-wss.git"
