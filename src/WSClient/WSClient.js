@@ -35,21 +35,32 @@ class WSClient {
                         });
                     }
                 });
-                this.socket.addEventListener('error', (event) => {
-                    if (this.handlers['error']) {
-                        this.handlers['error'].forEach((handler) => {
-                            handler(event)
-                        });
-                    }
-                    this.logger.error('===Error ' + JSON.stringify(event.error));
+            this.socket.addEventListener('error', (event) => {
+                if (this.handlers['error']) {
+                    this.handlers['error'].forEach((handler) => {
+                        handler(event)
+                    });
+                }
+                this.logger.error('===Error ' + JSON.stringify(event.error));
 
-                    if(event.error.code === 'ECONNREFUSED') {
-                        this.logger.info(`> Closing to ${this.id}`);
-                        this.close();
+                if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+                    // Node.js environment
+                    if (event.error) {
+                        const { code } = event.error;
+                        if (code === 'ECONNREFUSED') {
+                            this.logger.info(`> Closing to ${this.id}`);
+                            this.close();
+                        } else {
+                            reject(new Error(event.error));
+                        }
                     } else {
-                        reject(new Error(event.error));
+                        reject(new Error('An unknown error occurred'));
                     }
-                });
+                } else {
+                    // Browser environment as the event object does not contain error details at this point
+                    reject(new Error('WebSocket error occurred'));
+                }
+            });
 
                 this.socket.addEventListener('close', (event) => {
                     // Upon close, try to reconnect
