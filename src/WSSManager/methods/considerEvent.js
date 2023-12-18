@@ -4,7 +4,19 @@ async function considerEvent(event,...args) {
         try {
             const peer = args[0];
             const message = args[1].toString();
-            const parsed = JSON.parse(message)
+
+            const isJson = (str) => {
+                try {
+                    return JSON.parse(str);
+                } catch (e) {
+                    return false;
+                }
+            }
+            const parsed = isJson(message);
+
+            if(!parsed){
+                throw new Error('Not a JSON');
+            }
             if(parsed.type === 'authorize'){
                 const accessToken = parsed.payload;
                 this.handlers['authorize']?.forEach((handler) => {
@@ -15,7 +27,12 @@ async function considerEvent(event,...args) {
                 this.addPeerToRoom(peer, parsed.payload)
             }
             this.handlers['message']?.forEach((handler) => {
-              handler(peer, parsed)
+                try { 
+                    handler(peer, parsed)
+                } catch(err){
+                    console.error('Error in message handler');
+                    console.error(err)
+                }
             })
         } catch (err) {
             console.log(args[1].toString());
