@@ -24,6 +24,11 @@ async function start(props = {}) {
             self.peers.set(peer.id, peer);
             self.logger.listener('onConnection').info(`New client ${peer.id} connected. Total: ${self.peers.size}`);
 
+            if(self.handlers['connection']){
+                self.handlers['connection'].forEach((handler) => {
+                    handler(peer)
+                });
+            }
             ws.on('message', (message) => {
                 self.considerEvent('message', peer, message)
             });
