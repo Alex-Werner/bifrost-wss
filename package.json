@@ -1,6 +1,6 @@
 {
   "name": "bifrost-wss",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "WSS Manager",
   "main": "src/index.js",
   "type": "module",
