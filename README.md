@@ -1,13 +1,15 @@
 # bifrost-wss
 
+[![npm version](https://badge.fury.io/js/bifrost-wss.svg)](https://badge.fury.io/js/bifrost-wss)
 
-WebSocket Server + Client for simple room/topic based communication between peers and a server.    
 
-Simplified helpers for authorize, subscribe and standard {type,payload} message.     
+WebSocket Server & Client library for simple room/topic-based communication between peers and a server.
 
-Automatically reconnects to the server if the connection is lost.   
+Simplified helpers for authorization, subscription, and standard `{type, payload}` message handling.
 
-You keep full control on handlers or instances themselves, just some additional helpers for a plug&play with WSS.   
+Features automatic reconnection to the server if the connection is lost.
+
+Provides full control over handlers and instances, with additional helpers for easy integration with WebSocket Server (WSS).
 
 
 ## Installation
@@ -48,178 +50,126 @@ setInterval(()=>{
 
 
 ```js
-import {WSConnection} from 'bifrost-wss'
+import {WSClient} from 'bifrost-wss'
 
-const client = new WSClient( {
+const client = new WSClient({
     port: 8095,
     host: "localhost",
     headers: {
         access_token: '1234567890',
     }
 });
-client.addHandler('open', function open() {
+
+client.addHandler('open', () => {
     client.authorize();
-
-    setTimeout(()=>{
-        client.subscribe('room-1');
-    },10)
-
-    setTimeout(()=>{
-        client.subscribe('room-2');
-    }, 5000)
+    setTimeout(() => client.subscribe('room-1'), 10);
+    setTimeout(() => client.subscribe('room-2'), 5000);
 });
 
-client.addHandler('message', function message(event) {
-    console.log(event.data)
+client.addHandler('message', (event) => {
+    console.log(event.data);
 });
-await client.open()
+
+await client.open();
 ```
-## API
-
-### WSSManager
-
-#### `new WSSManager(options)`
-Create a new WSSManager instance.
-
-##### `options`
-Type: `object`
-
-###### `options.port`
-Type: `number`<br>
-Default: `8095`
-
-Port to listen on.
-
-###### `options.host`
-Type: `string`<br>
-Default: `localhost`
-
-Host to listen on.
-
-###### `options.logger`
-Type: `object`<br>
-Default: `console`
-
-Logger object to use. Must have `info`, `error`, `debug` and `trace` methods.
 
 
-#### `wssManager.start()`
-Start the server.
+## Features
 
-#### `wssManager.stop()`
-Stop the server.
+- **Room/Topic-Based Communication**: Enables communication in specific channels.
+- **WebSocket Server and Client**: Integrates both server (`WSSManager`) and client (`WSClient`) components.
+- **Automatic Reconnection**: Reconnects automatically if the connection drops.
+- **Simplified Message Handling**: Simplifies handling of `{type, payload}` message structures.
+- **Authorization Support**: Adds security through authorization logic.
+- **Dynamic Room Management**: Allows for the creation and removal of rooms on the fly.
+- **Broadcast Capabilities**: Facilitates message broadcasting to rooms or all clients.
+- **Customizable Logging**: Offers adaptable logging for monitoring and debugging.
+- **Extensible Event Handlers**: Supports adding custom handlers for WebSocket events.
+- **Subscription Management**: Enables clients to subscribe to specific rooms.
+- **Reconnection Strategy with Backoff**: Implements a delay in reconnection attempts to reduce server load.
+- **Message Sending Methods**: Provides convenient methods for sending messages.
+- **Configurable Settings**: Allows custom configuration of server and client settings.
+- **Modular Design**: Facilitates the addition of new features and methods.
+- **Error Handling and Reporting**: Ensures stable operation with robust error management.
 
-#### `wssManager.createRoom(roomName)`
-Create a new room.
+# API Reference
 
-##### `roomName`
-Type: `string`
+## WSSManager (Server Component)
 
-Name of the room to create.
+### `new WSSManager(options)`
+- **Description**: Initializes a new WebSocket server.
+- **Parameters**:
+    - `options`: Object containing configuration options.
+        - `port`: (Number) The port number for the server.
+        - `host`: (String) The host address for the server.
+        - `logger`: (Object) Custom logger object.
 
-#### `wssManager.removeRoom(roomName)`
-Remove a room.
+### `start()`
+- **Description**: Starts the WebSocket server.
 
-##### `roomName`
-Type: `string`
+### `stop()`
+- **Description**: Stops the WebSocket server.
 
-Name of the room to remove.
+### `createRoom(roomName)`
+- **Description**: Creates a new room.
+- **Parameters**:
+    - `roomName`: (String) Name of the room to create.
 
-#### `wssManager.broadcastRoom(roomName, message)`
-Broadcast a message to all clients in a room.
+### `removeRoom(roomName)`
+- **Description**: Removes an existing room.
+- **Parameters**:
+    - `roomName`: (String) Name of the room to remove.
 
-##### `roomName`
-Type: `string`
+### `broadcastRoom(roomName, message)`
+- **Description**: Broadcasts a message to all clients in a specified room.
+- **Parameters**:
+    - `roomName`: (String) Name of the room.
+    - `message`: (Object) Message object to broadcast.
 
-Name of the room to broadcast to.
+### `broadcastAll(message)`
+- **Description**: Broadcasts a message to all connected clients.
+- **Parameters**:
+    - `message`: (Object) Message object to broadcast.
 
-##### `message`
-Type: `object`
+### `addHandler(type, handler)`
+- **Description**: Adds a handler for a specific message type.
+- **Parameters**:
+    - `type`: (String) Type of message.
+    - `handler`: (Function) Handler function.
 
-Message to broadcast.
+## WSClient (Client Component)
 
-#### `wssManager.broadcastAll(message)`
-Broadcast a message to all clients.
+### `new WSClient(options)`
+- **Description**: Initializes a new WebSocket client.
+- **Parameters**:
+    - `options`: Object containing configuration options.
+        - `port`: (Number) The port number of the server.
+        - `host`: (String) The host address of the server.
+        - `headers`: (Object) Headers for WebSocket connection.
 
-##### `message`
-Type: `object`
+### `open()`
+- **Description**: Opens the WebSocket connection.
 
-Message to broadcast.
-    
-#### `wssManager.addHandler(type, handler)`
-Add a handler for a specific message type.
+### `close()`
+- **Description**: Closes the WebSocket connection.
 
-##### `type`
-Type: `string`
+### `subscribe(room)`
+- **Description**: Subscribes to a specific room.
+- **Parameters**:
+    - `room`: (String) Name of the room to subscribe to.
 
-Type of message to handle.
+### `authorize(accessToken)`
+- **Description**: Authorizes the client using an access token.
+- **Parameters**:
+    - `accessToken`: (String) Access token for authorization.
 
-##### `handler`
-Type: `function`
+### `send(message)`
+- **Description**: Sends a message through the WebSocket.
+- **Parameters**:
+    - `message`: (Object/String) Message object or string to send.
 
-Handler function to call when a message of the specified type is received.
-
-#### `wssManager.removeHandler(type, handler)`
-Remove a handler for a specific message type.
-
-##### `type`
-Type: `string`
-
-Type of message to remove handler for.
-
-##### `handler`
-Type: `function`
-
-Handler function to remove.
-
-#### `wssManager.addPeerHandler(type, handler)`
-Add a handler for a specific peer message type.
-
-##### `type`
-Type: `string`
-
-Type of message to handle.
-
-##### `handler`
-Type: `function`
-
-Handler function to call when a message of the specified type is received.
-
-#### `wssManager.removePeerHandler(type, handler)`
-Remove a handler for a specific peer message type.
-
-##### `type`
-Type: `string`
-
-Type of message to remove handler for.
-
-##### `handler`
-Type: `function`
-
-Handler function to remove.
-
-#### `wssManager.addRoomHandler(type, handler)`
-Add a handler for a specific room message type.
-
-##### `type`
-Type: `string`
-
-Type of message to handle.
-
-##### `handler`
-Type: `function`
-
-Handler function to call when a message of the specified type is received.
-
-#### `wssManager.removeRoomHandler(type, handler)`
-Remove a handler for a specific room message type.
-
-##### `type`
-Type: `string`
-
-Type of message to remove handler for.
-
-##### `handler`
-Type: `function`
-
-Handler function to remove.
+### `addHandler(name, handler)`
+- **Description**: Adds a handler for specific client events.
+- **Parameters**:
+    - `name`: (String) Name of the event.
+    - `handler`: (Function) Handler function.
