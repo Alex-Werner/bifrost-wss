@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import WSPeer from "../../WSPeer/WSPeer.js";
 async function start(props = {}) {
     const self = this;
