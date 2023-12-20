@@ -14,6 +14,8 @@ class WSClient {
         this.handlers = {};
 
         this.headers = props.headers ?? {};
+
+        this.reconnectAttempts = 0;
     }
 
     async open() {
@@ -70,11 +72,14 @@ class WSClient {
                             handler(event)
                         });
                     }
-                    this.logger.info(`>Reconnecting to ${this.id}`);
+                    const reconnectDelay = 1000 * (this.reconnectAttempts + 1);
+                    this.logger.info(`>Reconnecting to ${this.id} in ${reconnectDelay / 1000} seconds...`);
                     this.close();
+
                     setTimeout(()=>{
+                        this.reconnectAttempts++;
                         this.open();
-                    }, 1000)
+                    }, reconnectDelay)
                 })
                 // this.socket.addEventListener('error', (event) => {
                 //     this.logger.error(`Error ${event.message}`);
