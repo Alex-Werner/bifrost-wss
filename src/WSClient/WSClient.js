@@ -72,7 +72,7 @@ class WSClient {
                             handler(event)
                         });
                     }
-                    const reconnectDelay = 1000 * (this.reconnectAttempts + 1);
+                    const reconnectDelay = 1000 * (this.reconnectAttempts * 2);
                     this.logger.info(`>Reconnecting to ${this.id} in ${reconnectDelay / 1000} seconds...`);
                     this.close();
 
