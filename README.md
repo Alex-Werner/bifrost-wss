@@ -1,7 +1,6 @@
 # bifrost-wss
 
-[![npm version](https://badge.fury.io/js/bifrost-wss.svg)](https://badge.fury.io/js/bifrost-wss)
-
+[![NPM Version](https://img.shields.io/npm/v/bifrost-wss.svg?&style=flat-square)](https://www.npmjs.org/package/bifrost-wss)[![Release Date](https://img.shields.io/github/release-date/alex-werner/bifrost-wss)](https://github.com/alex-werner/bifrost-wss/releases/latest)
 
 WebSocket Server & Client library for simple room/topic-based communication between peers and a server.
 
