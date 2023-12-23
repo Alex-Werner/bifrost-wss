@@ -1,6 +1,6 @@
 {
   "name": "bifrost-wss",
-  "version": "3.1.2",
+  "version": "4.0.0",
   "description": "WSS Manager",
   "main": "src/index.js",
   "type": "module",
@@ -22,10 +22,10 @@
   },
   "homepage": "https://github.com/Alex-Werner/bifrost-wss#readme",
   "dependencies": {
-    "hermodlog": "^1.1.1",
-    "ws": "^8.14.2"
+    "hermodlog": "^1.2.0",
+    "ws": "^8.15.1"
   },
   "devDependencies": {
-    "vitest": "^0.34.5"
+    "vitest": "^1.1.0"
   }
 }
