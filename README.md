@@ -110,21 +110,24 @@ await client.open();
 ### `stop()`
 - **Description**: Stops the WebSocket server.
 
-### `createRoom(roomName)`
+### `createRoom(roomName, force = false)`
 - **Description**: Creates a new room.
 - **Parameters**:
     - `roomName`: (String) Name of the room to create.
+    - `force`: (Boolean) Whether to force the creation of the room if it already exists.
 
 ### `removeRoom(roomName)`
 - **Description**: Removes an existing room.
 - **Parameters**:
     - `roomName`: (String) Name of the room to remove.
 
-### `broadcastRoom(roomName, message)`
+### `broadcastRoom(roomName, message, sender = null, broadcastToSelf = false)`
 - **Description**: Broadcasts a message to all clients in a specified room.
 - **Parameters**:
     - `roomName`: (String) Name of the room.
     - `message`: (Object) Message object to broadcast.
+    - `sender`: (Object) Sender peer object. (Optional)
+    - `broadcastToSelf`: (Boolean) Whether to broadcast to the sender. (Optional)
 
 ### `broadcastAll(message)`
 - **Description**: Broadcasts a message to all connected clients.
