@@ -23,9 +23,9 @@
   "homepage": "https://github.com/Alex-Werner/bifrost-wss#readme",
   "dependencies": {
     "hermodlog": "^1.2.0",
-    "ws": "^8.15.1"
+    "ws": "^8.16.0"
   },
   "devDependencies": {
-    "vitest": "^1.1.0"
+    "vitest": "^1.1.3"
   }
 }
