@@ -148,6 +148,7 @@ await client.open();
         - `port`: (Number) The port number of the server.
         - `host`: (String) The host address of the server.
         - `headers`: (Object) Headers for WebSocket connection.
+        - `isSecure`: (Boolean) When true, use wss - defaults to false.
 
 ### `open()`
 - **Description**: Opens the WebSocket connection.
