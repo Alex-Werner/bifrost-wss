@@ -22,6 +22,8 @@ class WSClient {
 
         this.headers = props.headers ?? {};
 
+        this.status = 'idle'
+
         this.reconnectAttempts = 0;
     }
 }

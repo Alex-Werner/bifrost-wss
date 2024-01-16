@@ -1,10 +1,20 @@
 import WebSocket from "ws";
 
 export default async function open() {
+    let hasConnectedOnce = false;
+    this.status = 'connecting';
     return new Promise((resolve, reject) => {
+        if (this.socket) {
+            this.logger.info(`Already connected to ${this.id}`);
+            return resolve(true);
+        }
         const peerURI = (this.isSecure) ? `wss://${this.host}:${this.port}` : `ws://${this.host}:${this.port}`;
         this.socket = new WebSocket(peerURI);
         this.socket.addEventListener('open', () => {
+            if(!hasConnectedOnce){
+                hasConnectedOnce = true;
+            }
+            this.status = 'connected';
             this.logger.info(`Connected to ${this.id}`);
             if (this.handlers['open']) {
                 this.handlers['open'].forEach((handler) => {
@@ -43,7 +53,12 @@ export default async function open() {
                 }
             } else {
                 // Browser environment as the event object does not contain error details at this point
-                reject(new Error('WebSocket error occurred'));
+                if(!hasConnectedOnce && this.status === 'connecting'){
+                    // Probably a connection refused, peer not listening, etc.
+                    reject(new Error(`Connection to ${peerURI} refused or impossible`));
+                } else {
+                    reject(new Error('WebSocket error occurred'));
+                }
             }
         });
 
@@ -64,15 +79,5 @@ export default async function open() {
                 this.open();
             }, reconnectDelay)
         })
-        // this.socket.addEventListener('error', (event) => {
-        //     this.logger.error(`Error ${event.message}`);
-        //     if (this.handlers['error']) {
-        //         this.handlers['error'].forEach((handler) => {
-        //             handler(event)
-        //         });
-        //     }
-        //     this.logger.info(`Reconnecting to ${this.id}`);
-        //     this.close();
-        // })
     });
 }
