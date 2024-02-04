@@ -1,5 +1,6 @@
 import * as WebSocket from 'ws';
 import WSPeer from "../../WSPeer/WSPeer.js";
+import parseRawMessage from "../../utils/parseRawMessage.js";
 async function start(props = {}) {
     const self = this;
 
@@ -30,8 +31,8 @@ async function start(props = {}) {
                     handler(peer)
                 });
             }
-            ws.on('message', (message) => {
-                self.considerEvent('message', peer, message)
+            ws.on('message', (rawData) => {
+                self.considerRawMessage(rawData, peer, ws)
             });
             ws.on('close', () => {
                 self.considerEvent('close', peer, ws)

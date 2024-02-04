@@ -1,6 +1,6 @@
-function broadcastRoom(room, message, sender = null, broadcastToSelf = false) {
+function broadcastRoom(room, payload, sender = null, broadcastToSelf = false) {
     const logger = this.logger.method('broadcastRoom');
-    logger.log(`-> Broadcasting to room ${room} - ${message}`);
+    logger.trace(`-> Broadcasting to room ${room} - `,payload);
     const peers = this.rooms.get(room);
     if (!peers) {
         return;
@@ -9,8 +9,8 @@ function broadcastRoom(room, message, sender = null, broadcastToSelf = false) {
         if (sender && !broadcastToSelf && sender.id === peer.id) {
             return;
         }
-        peer.send(message);
+        peer.send({ topic: room, payload: payload });
     });
-    logger.log(`<- Broadcasted to ${peers.size} peers in room ${room}`);
+    logger.trace(`<- Broadcasted to ${peers.size} peers in room ${room}`);
 }
 export default broadcastRoom;

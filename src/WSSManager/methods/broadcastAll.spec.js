@@ -23,11 +23,11 @@ describe('broadcastAll', () => {
         context.peers.set('peer2', peer2);
         const message = 'test message';
 
-        broadcastAll.call(context, message);
+        broadcastAll.call(context, {message});
 
-        expect(peer1.send).toHaveBeenCalledWith(message);
-        expect(peer2.send).toHaveBeenCalledWith(message);
-        expect(context.logger.method).toHaveBeenCalledWith('broadcastRoom');
+        expect(peer1.send).toHaveBeenCalledWith({payload: {message}, topic: '*'});
+        expect(peer2.send).toHaveBeenCalledWith({payload: {message}, topic: '*'});
+        expect(context.logger.method).toHaveBeenCalledWith('broadcastAll');
         // expect(context.logger.method().log).toHaveBeenCalledWith('-> Broadcasting to All');
         // expect(context.logger.method).toHaveBeenCalledWith('broadcastAll');
         // expect(context.logger.method().trace).toHaveBeenCalledWith(`<- Broadcasted to ${context.peers.size} peers`);

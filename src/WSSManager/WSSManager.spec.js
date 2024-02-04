@@ -14,7 +14,6 @@ describe('WSSManager', () => {
         wssManager.start();
         const client = new ws('ws://localhost:8090');
         client.on('open', function open() {
-            console.log('connected')
             client.send('something');
         });
     });

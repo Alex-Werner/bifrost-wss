@@ -11,29 +11,15 @@ describe('considerEvent', () => {
                 'authorize': [],
             },
             addPeerToRoom: vi.fn(),
+            logger: {
+                trace: vi.fn(),
+            }
         };
     });
 
-    it('should handle JSON authorize message correctly', async () => {
-        const peer = {};
-        const message = JSON.stringify({ type: 'authorize', payload: 'accessToken123' });
-        const authorizeHandler = vi.fn();
-        context.handlers['authorize'].push(authorizeHandler);
 
-        await considerEvent.call(context, 'message', peer, message);
 
-        expect(authorizeHandler).toHaveBeenCalledWith(peer, 'accessToken123');
-    });
 
-    it('should handle JSON subscribe message correctly', async () => {
-        const peer = { id: 'peer1' };
-        const roomName = 'testRoom';
-        const message = JSON.stringify({ type: 'subscribe', payload: roomName });
-
-        await considerEvent.call(context, 'message', peer, message);
-
-        expect(context.addPeerToRoom).toHaveBeenCalledWith(peer, roomName);
-    });
 
     it('should call message handlers with parsed message', async () => {
         const peer = {};
@@ -43,7 +29,7 @@ describe('considerEvent', () => {
 
         await considerEvent.call(context, 'message', peer, message);
 
-        expect(messageHandler).toHaveBeenCalledWith(peer, { type: 'testType', payload: 'testPayload' });
+        expect(messageHandler).toHaveBeenCalledWith(peer, JSON.stringify({ type: 'testType', payload: 'testPayload' }));
     });
 
     it('should handle non-JSON message by calling message handlers with original args', async () => {

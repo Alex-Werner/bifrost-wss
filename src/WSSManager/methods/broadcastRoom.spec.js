@@ -10,6 +10,7 @@ describe('broadcastRoom', () => {
             logger: {
                 method: vi.fn(() => ({
                     log: vi.fn(),
+                    trace: vi.fn(),
                 })),
             },
         };
@@ -24,8 +25,8 @@ describe('broadcastRoom', () => {
 
         broadcastRoom.call(context, roomName, message);
 
-        expect(peer1.send).toHaveBeenCalledWith(message);
-        expect(peer2.send).toHaveBeenCalledWith(message);
+        expect(peer1.send).toHaveBeenCalledWith({payload:message, topic:roomName});
+        expect(peer2.send).toHaveBeenCalledWith({payload:message, topic:roomName});
         expect(context.logger.method).toHaveBeenCalledWith('broadcastRoom');
         // expect(context.logger.method().log).toHaveBeenCalledWith(`-> Broadcasting to room ${roomName} - ${message}`);
         // expect(context.logger.method().log).toHaveBeenCalledWith(`<- Broadcasted to 2 peers in room ${roomName}`);
@@ -41,7 +42,7 @@ describe('broadcastRoom', () => {
         broadcastRoom.call(context, roomName, message, sender, false);
 
         expect(sender.send).not.toHaveBeenCalled();
-        expect(peer2.send).toHaveBeenCalledWith(message);
+        expect(peer2.send).toHaveBeenCalledWith({payload:message, topic:roomName});
     });
 
     it('should do nothing if the room does not exist', () => {

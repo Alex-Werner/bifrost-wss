@@ -1,9 +1,10 @@
-function broadcastAll(message) {
-    this.logger.method('broadcastRoom').log(`-> Broadcasting to All`);
+function broadcastAll(payload) {
+    const logger = this.logger.method('broadcastAll')
+    logger.trace(`-> Broadcasting to All`);
 
     this.peers.forEach((peer) => {
-            peer.send(message);
+            peer.send({topic: '*', payload});
         });
-        this.logger.method('broadcastAll').trace(`<- Broadcasted to ${this.peers.size} peers`);
+    logger.trace(`<- Broadcasted to ${this.peers.size} peers`);
 }
 export default broadcastAll;
