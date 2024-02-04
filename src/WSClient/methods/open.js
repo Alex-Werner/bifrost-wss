@@ -24,10 +24,29 @@ export default async function open() {
             resolve(true);
         });
         this.socket.addEventListener('message', (event) => {
-            if (this.handlers['message']) {
-                this.handlers['message'].forEach((handler) => {
-                    handler(event)
-                });
+            try{
+                const message = JSON.parse(event.data);
+                if (this.handlers['message']) {
+                    this.handlers['message'].forEach((handler) => {
+                        handler(message)
+                    });
+                }
+                // Also check if there are topic handlers
+                if (this.handlers[message.topic]) {
+                    this.handlers[message.topic].forEach((handler) => {
+                        handler(message)
+                    });
+                }
+
+                // Check if there are any requests awaiting a response
+                if (message.requestId && this.messageAwaitingResponses.has(message.requestId)) {
+                    const { resolve, reject } = this.messageAwaitingResponses.get(message.requestId);
+                    this.messageAwaitingResponses.delete(message.requestId);
+                    resolve(message);
+                }
+
+            }catch (e){
+                this.logger.error('Error in message handler', e);
             }
         });
         this.socket.addEventListener('error', (event) => {

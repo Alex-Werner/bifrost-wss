@@ -17,6 +17,10 @@ class WSClient {
 
         this.socket = null;
         this.logger = props.logger ?? new Logger().context(`WSClient(${this.host}:${this.port})`);
+        Object.defineProperty(this, 'logger', {
+            writable: true,
+            enumerable: false,
+        });
 
         this.handlers = {};
 
@@ -25,6 +29,8 @@ class WSClient {
         this.status = 'idle'
 
         this.reconnectAttempts = 0;
+
+        this.messageAwaitingResponses = new Map();
     }
 }
 
