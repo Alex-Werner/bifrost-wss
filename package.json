@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/Alex-Werner/bifrost-wss#readme",
   "dependencies": {
+    "@stablelib/random": "^1.0.2",
+    "dotenv": "^16.4.1",
     "hermodlog": "^1.2.0",
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "vitest": "^1.1.3"
+    "vitest": "^1.2.2"
   }
 }

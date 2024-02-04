@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import {WSSManager} from "./src/index.js";
 
 (async ()=>{
@@ -7,18 +8,29 @@ import {WSSManager} from "./src/index.js";
     });
     server.createRoom('room-1')
     server.createRoom('room-2')
-    server.addHandler('authorize', function open(peer, accessKey) {
-        if(accessKey === '1234567890') {
+
+    server.addHandler('authorize', function open(peer, accessToken) {
+        if(accessToken === process.env.ACCESS_TOKEN) {
             // Deal with Auth for instance, and modify the peer object
             peer.isAuth = true;
         }
     })
 
+    let i = 0;
+    server.addHandler('increment', function increment(peer, message) {
+        if(message.requestId){
+            peer.send({value: i++, requestId: message.requestId})
+        }
+    });
+
     await server.start()
     setInterval(()=>{
-        server.logger.level = 'trace';
-        server.broadcastRoom('room-1', {type: 'hello', payload: 'room1'})
-        server.broadcastRoom('room-2', {type: 'hello', payload: 'room2'})
-        server.broadcastAll({type: 'hello', payload: 'all'})
-    },1000)
+        server.broadcastAll({type: 'message', message: 'all'})
+    },3000)
+
+    setInterval(()=>{
+        server.broadcastRoom('room-1',{type: 'message', message: 'room-1'})
+        server.broadcastRoom('room-2',{type: 'message', message: 'room-2'})
+    },7000)
+
 })()

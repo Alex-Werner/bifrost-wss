@@ -2,14 +2,10 @@
 
 [![NPM Version](https://img.shields.io/npm/v/bifrost-wss.svg?&style=flat-square)](https://www.npmjs.org/package/bifrost-wss)[![Release Date](https://img.shields.io/github/release-date/alex-werner/bifrost-wss)](https://github.com/alex-werner/bifrost-wss/releases/latest)
 
-WebSocket Server & Client library for simple room/topic-based communication between peers and a server.
+WebSocket Server & Client library for simple authorized publisher/subscriber communication with rooms/topics.  
+Also provides a simple request/response pattern (via command).
 
-Simplified helpers for authorization, subscription, and standard `{type, payload}` message handling.
-
-Features automatic reconnection to the server if the connection is lost.
-
-Provides full control over handlers and instances, with additional helpers for easy integration with WebSocket Server (WSS).
-
+Provides full control over handlers and instances, with additional helpers for easy integration with WebSocket Server (WSS).  
 
 ## Installation
 
@@ -29,12 +25,20 @@ import {WSSManager} from 'bifrost-wss'
 });
 server.createRoom('room-1')
 server.createRoom('room-2')
-server.addHandler('authorize', function open(peer, accessKey) {
-    if(accessKey === '1234567890') {
+
+server.addHandler('authorize', function open(peer, accessToken) {
+    if(accessToken === process.env.ACCESS_TOKEN) {
         // Deal with Auth for instance, and modify the peer object
         peer.isAuth = true;
     }
 })
+
+// Allow a peer to send a command "increment" and get a response
+server.addHandler('increment', function increment(peer, message) {
+    if(message.requestId){
+        peer.send({value: i++, requestId: message.requestId})
+    }
+});
 
 await server.start()
 setInterval(()=>{
@@ -43,6 +47,9 @@ setInterval(()=>{
     server.broadcastRoom('room-2', {type: 'hello', payload: 'room2'})
     server.broadcastAll({type: 'hello', payload: 'all'})
 },1000)
+
+
+
 ```
 
 ### Client side
@@ -55,7 +62,7 @@ const client = new WSClient({
     port: 8095,
     host: "localhost",
     headers: {
-        access_token: '1234567890',
+        access_token: process.env.ACCESS_TOKEN,
     }
 });
 
@@ -65,31 +72,56 @@ client.addHandler('open', () => {
     setTimeout(() => client.subscribe('room-2'), 5000);
 });
 
-client.addHandler('message', (event) => {
-    console.log(event.data);
+// global handler for all messages, they are in JSON already
+client.addHandler('message', (message) => {
+    console.log(message);
+});
+
+// Will be called only for messages from room-1
+client.addHandler('room-1', function message(message) {
+    console.log('room-1 handler', message)
 });
 
 await client.open();
+
+// Will send a command to the server and wait for a response
+const req = client.send({
+    cmd: 'increment',
+})
+const res = await req;
+console.log('increment response', res)
 ```
 
+## Commands 
+
+When .send() is called with a `cmd` property, a requestId will be generated, and a listener associated with the requestId will be created. The response will be awaited and the listener removed.
+
+```js
+{
+    cmd: 'subscribe',
+    room: 'time-beacon'
+}
+```
+
+## Events
+
+```js
+{
+    topic: 'time-beacon',
+    payload: {time: 1234567890}
+}
+```
 
 ## Features
 
 - **Room/Topic-Based Communication**: Enables communication in specific channels.
-- **WebSocket Server and Client**: Integrates both server (`WSSManager`) and client (`WSClient`) components.
-- **Automatic Reconnection**: Reconnects automatically if the connection drops.
-- **Simplified Message Handling**: Simplifies handling of `{type, payload}` message structures.
-- **Authorization Support**: Adds security through authorization logic.
-- **Dynamic Room Management**: Allows for the creation and removal of rooms on the fly.
-- **Broadcast Capabilities**: Facilitates message broadcasting to rooms or all clients.
-- **Customizable Logging**: Offers adaptable logging for monitoring and debugging.
+- **WebSocket Server and Client**: Provides both server and client components.
+- **Reconnection**: Reconnects automatically if the connection drops.
+- **Authorization**: Pre-build authorization logic
+- **On-the-fly room management**: Allows for the creation and removal of rooms on the fly.
 - **Extensible Event Handlers**: Supports adding custom handlers for WebSocket events.
-- **Subscription Management**: Enables clients to subscribe to specific rooms.
-- **Reconnection Strategy with Backoff**: Implements a delay in reconnection attempts to reduce server load.
-- **Message Sending Methods**: Provides convenient methods for sending messages.
-- **Configurable Settings**: Allows custom configuration of server and client settings.
-- **Modular Design**: Facilitates the addition of new features and methods.
-- **Error Handling and Reporting**: Ensures stable operation with robust error management.
+- **Request/Response Pattern**: Supports a simple request/response pattern.
+
 
 # API Reference
 
