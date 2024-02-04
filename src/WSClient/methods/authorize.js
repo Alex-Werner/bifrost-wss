@@ -4,7 +4,7 @@ export default function authorize(_accessToken) {
         throw new Error('Missing access_token')
     }
     this.send({
-        type: 'authorize',
-        payload: this.headers['access_token']
+        cmd: 'authorize',
+        token: this.headers['access_token']
     })
 }
