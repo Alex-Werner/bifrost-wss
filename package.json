@@ -24,7 +24,7 @@
   "dependencies": {
     "@stablelib/random": "^1.0.2",
     "dotenv": "^16.4.1",
-    "hermodlog": "^1.2.0",
+    "hermodlog": "^1.4.1",
     "ws": "^8.16.0"
   },
   "devDependencies": {
